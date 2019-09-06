@@ -33,13 +33,13 @@ public class FileUtil {
     public List<Integer> searchOccurrences(String template) throws IOException {
         if (file == null) throw new FileNotFoundException();
         List<Integer> resultList = new ArrayList<>();
-        int lineNumber = 0;
+        int charNumber = 0;
         try (LineIterator it = FileUtils.lineIterator(file, "UTF-8")) {
             while (it.hasNext()) {
                 String line = it.nextLine();
                 if (line.contains(template))
-                    resultList.add(lineNumber);
-                lineNumber++;
+                    resultList.add(charNumber);
+                charNumber += line.length();
             }
         }
         return resultList;
