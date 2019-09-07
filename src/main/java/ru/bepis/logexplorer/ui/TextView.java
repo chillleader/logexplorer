@@ -13,7 +13,7 @@ public class TextView extends JPanel {
     private JPanel buttonBox = new JPanel();
     private JButton nextButton = new JButton("Next");
     private JButton prevButton = new JButton("Prev");
-    private JTextArea textArea = new JTextArea(35, 50);
+    private JTextArea textArea = new JTextArea(35, 70);
     private JScrollPane scrollPane = new JScrollPane(textArea,
         JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
 

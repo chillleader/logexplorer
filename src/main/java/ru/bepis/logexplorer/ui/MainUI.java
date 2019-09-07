@@ -30,17 +30,19 @@ public class MainUI extends JFrame {
         rightPanelSlot);
 
 
-
     private MainUI() {
         super("Log Explorer");
-        this.setBounds(100, 100, 1500, 800);
+        this.setBounds(100, 100, 800, 800);
         this.setLayout(new FlowLayout());
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        splitPane.setDividerLocation(getBounds().width / 2);
-        leftPanelSlot.setMinimumSize(new Dimension(400, 200));
-        rightPanelSlot.setMinimumSize(new Dimension(400, 200));
-        /*this.add(splitPane);*/
-        this.add(rightPanelSlot);
+        splitPane.setDividerLocation(0.5);
+        splitPane.setOneTouchExpandable(true);
+        leftPanelSlot.setMinimumSize(new Dimension(150, 400));
+        rightPanelSlot.setMinimumSize(new Dimension(400, 400));
+        this.add(splitPane);
+        //this.add(rightPanelSlot);
+        //this.add(leftPanelSlot);
+        pack();
         setVisible(true);
     }
 
