@@ -13,19 +13,19 @@ public class TextTab extends JPanel {
     private JPanel buttonBox = new JPanel();
     private JButton nextButton = new JButton("Next");
     private JButton prevButton = new JButton("Prev");
-    private JTextArea textArea = new JTextArea(35, 50);
+    private JTextArea textArea = new JTextArea(35, 80);
     private JScrollPane scrollPane = new JScrollPane(textArea,
         JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
 
-    private String filePath = "C:/Users/easyd/Desktop/test1/alice29.txt";
     private ChunkFileReader fileReader;
 
-    public TextTab() {
+    public TextTab(String filePath) {
         super();
         setLayout(new BorderLayout());
         textArea.setEditable(false);
         buttonBox.add(prevButton);
         buttonBox.add(nextButton);
+        textArea.setFont(MainUI.getTextFont());
         //scrollPane.setPreferredSize(new Dimension(this.getWidth() - 20, this.getHeight() - 20));
         this.add(buttonBox, BorderLayout.PAGE_START);
         this.add(scrollPane, BorderLayout.LINE_END);

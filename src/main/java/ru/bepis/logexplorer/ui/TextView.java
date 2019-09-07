@@ -11,9 +11,10 @@ public class TextView extends JPanel {
     private JLabel placeholder = new JLabel("You will see the file contents here");
 
     TextView() {
+        tabbedPane.setFont(MainUI.getAppFont());
         setLayout(new BorderLayout());
         this.add(tabbedPane, BorderLayout.CENTER);
-        tabbedPane.addTab("File 1", new TextTab());
+        tabbedPane.addTab("File 1", new TextTab("C:/Users/easyd/Desktop/test1/alice29.txt"));
     }
 
 }

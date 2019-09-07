@@ -8,7 +8,7 @@ public class Main {
         MainUI ui = MainUI.getInstance();
 //        List<String> dirs = new ArrayList<>();
 //        dirs.add("C:/Users/easyd/Desktop");
-//        Searcher searcher = new Searcher();
+//        MultithreadedSearcher searcher = new MultithreadedSearcher();
 //        searcher.setDirectoryList(dirs);
 //        searcher.setExtension("txt");
 //        searcher.setSearchTemplate("Lorem");
