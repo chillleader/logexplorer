@@ -94,8 +94,8 @@ public class MainUI extends JFrame {
         //splitPane.setDividerLocation(0.5);
         //splitPane.setResizeWeight(0.5);
         //splitPane.setOneTouchExpandable(true);
-        leftPanelSlot.setMinimumSize(new Dimension(250, 400));
-        rightPanelSlot.setMinimumSize(new Dimension(400, 400));
+        //leftPanelSlot.setMinimumSize(new Dimension(250, 400));
+        rightPanelSlot.setMinimumSize(new Dimension(300, 400));
         //this.add(splitPane);
         this.add(leftPanelSlot, BorderLayout.LINE_START);
         this.add(rightPanelSlot, BorderLayout.CENTER);
@@ -152,6 +152,12 @@ public class MainUI extends JFrame {
                                     }*/
                                     try {
                                         setResult(task.get());
+                                        final int fileCount = task.get().keySet().size();
+                                        final int entryCount = task.get().values().size();
+                                        JOptionPane.showMessageDialog(
+                                            null, "Found: " + entryCount + " occurrences in " + fileCount
+                                                + " files", "Search results",
+                                            JOptionPane.INFORMATION_MESSAGE);
                                     } catch (InterruptedException e1) {
                                         e1.printStackTrace();
                                     } catch (ExecutionException e1) {
@@ -179,6 +185,12 @@ public class MainUI extends JFrame {
         this.add(leftPanelSlot, BorderLayout.LINE_START);
         this.validate();
         this.repaint();
+    }
+
+    public void openFile(String path) {
+        rightPanelSlot.openFile(path);
+        validate();
+        repaint();
     }
 
 

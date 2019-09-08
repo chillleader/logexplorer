@@ -1,6 +1,8 @@
 package ru.bepis.logexplorer.ui;
 
 import java.awt.BorderLayout;
+import java.io.File;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -15,26 +17,36 @@ import javax.swing.tree.TreePath;
 public class FileTreeView extends JPanel {
 
     private JTree tree;
+    private TreeNode root;
     private final String PLACEHOLDER_TEXT = "You will see search result here";
 
     FileTreeView(Map<String, List<Long>> searchResult) {
         super();
         setLayout(new BorderLayout());
-        TreeNode root = new DefaultMutableTreeNode("Search results");
+        root = new DefaultMutableTreeNode("Search results");
         tree = new JTree(root);
         tree.setFont(MainUI.getAppFont());
 
         for (String path : searchResult.keySet()) {
             addNode(path);
         }
+        expandAll(tree, new TreePath(tree.getModel().getRoot()), true);
 
         tree.addTreeSelectionListener(e -> {
             TreePath treepath = e.getPath();
             if (treepath.getParentPath() == null) {
                 return;
             }
-            System.out.println(treepath.getParentPath().getLastPathComponent());
-            System.out.println(treepath.getLastPathComponent());
+            tree.setSelectionPath(treepath);
+            StringBuilder sb = new StringBuilder();
+            for (int i = 1; i < treepath.getPath().length; i++) {
+                sb.append(treepath.getPath()[i]);
+                sb.append('\\');
+            }
+            File file = new File(sb.toString());
+            if (!file.exists() || file.isDirectory()) return;
+            System.out.println(sb.toString());
+            MainUI.getInstance().openFile(sb.toString());
         });
 
         JScrollPane scrollpane = new JScrollPane();
@@ -52,10 +64,9 @@ public class FileTreeView extends JPanel {
         String[] parts = pathString
             .split(Matcher.quoteReplacement(System.getProperty("file.separator")));
         DefaultMutableTreeNode curNode = (DefaultMutableTreeNode) tree.getModel().getRoot();
-        StringBuilder stringBuilder = new StringBuilder();
+        DefaultMutableTreeNode child;
         for (int i = 0; i < parts.length; i++) {
-            stringBuilder.append(parts[i]);
-            DefaultMutableTreeNode child = null;
+            child = null;
             for (int j = 0; j < curNode.getChildCount(); j++) {
                 if (curNode.getChildAt(j).toString().equals(parts[i])) {
                     child = (DefaultMutableTreeNode) curNode.getChildAt(j);
@@ -67,10 +78,27 @@ public class FileTreeView extends JPanel {
             }
             curNode.add(child);
             curNode = child;
-            stringBuilder.append("\\");
         }
-        tree.expandPath(
-            tree.getPathForRow(tree.getRowCount() > 0 ? tree.getRowCount() - 1 : 0));
+    }
+
+    private void expandAll(JTree tree, TreePath path, boolean expand) {
+        TreeNode node = (TreeNode) path.getLastPathComponent();
+
+        if (node.getChildCount() >= 0) {
+            Enumeration enumeration = node.children();
+            while (enumeration.hasMoreElements()) {
+                TreeNode n = (TreeNode) enumeration.nextElement();
+                TreePath p = path.pathByAddingChild(n);
+
+                expandAll(tree, p, expand);
+            }
+        }
+
+        if (expand) {
+            tree.expandPath(path);
+        } else {
+            tree.collapsePath(path);
+        }
     }
 
 }

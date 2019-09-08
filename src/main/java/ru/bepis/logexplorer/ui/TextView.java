@@ -17,4 +17,8 @@ public class TextView extends JPanel {
         tabbedPane.addTab("File 1", new TextTab("C:/Users/easyd/Desktop/test1/alice29.txt"));
     }
 
+    public void openFile(String path) {
+        tabbedPane.addTab("file", new TextTab(path));
+    }
+
 }

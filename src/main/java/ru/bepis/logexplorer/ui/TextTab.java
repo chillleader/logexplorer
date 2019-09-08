@@ -32,7 +32,7 @@ public class TextTab extends JPanel {
         configureActions();
         try {
             fileReader = new ChunkFileReader(filePath);
-            textArea.setText(fileReader.readPageContaining(65500));
+            textArea.setText(fileReader.readNextPage());
         } catch (IOException e) {
             e.printStackTrace();
         }
