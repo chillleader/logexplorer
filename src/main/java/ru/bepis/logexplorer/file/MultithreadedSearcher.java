@@ -26,7 +26,7 @@ public class MultithreadedSearcher implements Searcher {
     private List<String> directoryList;
     private String searchTemplate;
     private String extension;
-    private Map<String, List<Integer>> result = new HashMap<>();
+    private Map<String, List<Long>> result = new HashMap<>();
 
     @Override
     public void setDirectoryList(List<String> directoryList) {
@@ -44,7 +44,7 @@ public class MultithreadedSearcher implements Searcher {
     }
 
     @Override
-    public Map<String, List<Integer>> getResult() {
+    public Map<String, List<Long>> getResult() {
         return result;
     }
 
@@ -62,20 +62,20 @@ public class MultithreadedSearcher implements Searcher {
         try {
             fileNames = FileNameExtractor.convertToFileNames(directoryList, extension);
             ExecutorService executor = Executors.newFixedThreadPool(MAX_THREADS);
-            List<Future<List<Integer>>> futures = new ArrayList<>();
+            List<Future<List<Long>>> futures = new ArrayList<>();
 
             for (String name : fileNames) {
-                Callable<List<Integer>> task = () -> {
+                Callable<List<Long>> task = () -> {
                     FileUtil util = new FileUtil();
                     util.openFile(name);
                     return util.searchOccurrences(searchTemplate);
                 };
-                Future<List<Integer>> future = executor.submit(task);
+                Future<List<Long>> future = executor.submit(task);
                 futures.add(future);
             }
 
             for (int i = 0; i < fileNames.size(); i++) {
-                List<Integer> searchResult = futures.get(i).get();
+                List<Long> searchResult = futures.get(i).get();
                 if (searchResult.isEmpty()) {
                     continue;
                 }

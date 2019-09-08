@@ -30,10 +30,10 @@ public class FileUtil {
      * empty list if the file doesn't contain any occurrences
      * @throws IOException When couldn't read the file
      */
-    public List<Integer> searchOccurrences(String template) throws IOException {
+    public List<Long> searchOccurrences(String template) throws IOException {
         if (file == null) throw new FileNotFoundException();
-        List<Integer> resultList = new ArrayList<>();
-        int charNumber = 0;
+        List<Long> resultList = new ArrayList<>();
+        long charNumber = 0;
         try (LineIterator it = FileUtils.lineIterator(file, "UTF-8")) {
             while (it.hasNext()) {
                 String line = it.nextLine();

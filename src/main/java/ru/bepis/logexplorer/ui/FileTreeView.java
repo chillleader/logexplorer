@@ -1,7 +1,10 @@
 package ru.bepis.logexplorer.ui;
 
 import java.awt.BorderLayout;
+import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTree;
@@ -12,15 +15,18 @@ import javax.swing.tree.TreePath;
 public class FileTreeView extends JPanel {
 
     private JTree tree;
+    private final String PLACEHOLDER_TEXT = "You will see search result here";
 
-    FileTreeView() {
+    FileTreeView(Map<String, List<Long>> searchResult) {
         super();
         setLayout(new BorderLayout());
         TreeNode root = new DefaultMutableTreeNode("Search results");
         tree = new JTree(root);
         tree.setFont(MainUI.getAppFont());
 
-        addNode("C:\\Users\\easyd\\Desktop");
+        for (String path : searchResult.keySet()) {
+            addNode(path);
+        }
 
         tree.addTreeSelectionListener(e -> {
             TreePath treepath = e.getPath();
@@ -36,6 +42,11 @@ public class FileTreeView extends JPanel {
         add(BorderLayout.CENTER, scrollpane);
     }
 
+    FileTreeView() {
+        super();
+        add(new JLabel(PLACEHOLDER_TEXT));
+    }
+
     void addNode(String pathString) {
         // split path
         String[] parts = pathString
@@ -46,7 +57,7 @@ public class FileTreeView extends JPanel {
             stringBuilder.append(parts[i]);
             DefaultMutableTreeNode child = null;
             for (int j = 0; j < curNode.getChildCount(); j++) {
-                if (curNode.getChildAt(j).toString().equals(stringBuilder.toString())) {
+                if (curNode.getChildAt(j).toString().equals(parts[i])) {
                     child = (DefaultMutableTreeNode) curNode.getChildAt(j);
                     break;
                 }

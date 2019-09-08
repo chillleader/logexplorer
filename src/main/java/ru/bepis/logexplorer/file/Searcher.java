@@ -18,9 +18,9 @@ public interface Searcher {
     void startSearch() throws IllegalStateException;
 
     // returns false if the search is in progress, true otherwise
-    public boolean isReady();
+    boolean isReady();
 
     // list contains positions in file where text was found
-    Map<String, List<Integer>> getResult();
+    Map<String, List<Long>> getResult();
 
 }

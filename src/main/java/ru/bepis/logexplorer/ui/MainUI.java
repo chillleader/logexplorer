@@ -1,9 +1,16 @@
 package ru.bepis.logexplorer.ui;
 
+import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.Font;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.File;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ExecutionException;
+import java.util.stream.Collectors;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JFileChooser;
@@ -13,9 +20,9 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 import javax.swing.JTextField;
+import javax.swing.SwingWorker.StateValue;
 import javax.swing.WindowConstants;
 
 // Singleton UI class
@@ -38,8 +45,8 @@ public class MainUI extends JFrame {
     private JFileChooser fileChooser = new JFileChooser();
     private JButton fileChooserButton = new JButton("Choose");
 
-    private JPanel leftPanelSlot = new FileTreeView();
-    private JPanel rightPanelSlot = new TextView();
+    private FileTreeView leftPanelSlot = new FileTreeView();
+    private TextView rightPanelSlot = new TextView();
     private JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, leftPanelSlot,
         rightPanelSlot);
 
@@ -57,10 +64,12 @@ public class MainUI extends JFrame {
         fileChooserButton
     };
 
+    // font for labels, menus etc
     static Font getAppFont() {
         return font;
     }
 
+    // font for text in file view
     static Font getTextFont() {
         return textFont;
     }
@@ -68,7 +77,7 @@ public class MainUI extends JFrame {
     private MainUI() {
         super("Log Explorer");
         this.setBounds(100, 100, 800, 800);
-        this.setLayout(new FlowLayout());
+        this.setLayout(new BorderLayout());
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         newSearch.setFont(font);
         about.setFont(font);
@@ -85,11 +94,11 @@ public class MainUI extends JFrame {
         //splitPane.setDividerLocation(0.5);
         //splitPane.setResizeWeight(0.5);
         //splitPane.setOneTouchExpandable(true);
-        leftPanelSlot.setMinimumSize(new Dimension(150, 400));
+        leftPanelSlot.setMinimumSize(new Dimension(250, 400));
         rightPanelSlot.setMinimumSize(new Dimension(400, 400));
         //this.add(splitPane);
-        this.add(leftPanelSlot);
-        this.add(rightPanelSlot);
+        this.add(leftPanelSlot, BorderLayout.LINE_START);
+        this.add(rightPanelSlot, BorderLayout.CENTER);
 
         fileChooserButton.addActionListener(e -> {
             int result = fileChooser.showOpenDialog(null);
@@ -109,10 +118,67 @@ public class MainUI extends JFrame {
                 System.out.println(
                     "Searching " + searchTemplate.getText() + " in " + extension.getText());
             }
+            SearchWorker task = new SearchWorker();
+            List<String> paths = Arrays.stream(fileChooser.getSelectedFiles())
+                .map(File::getAbsolutePath).collect(Collectors.toList());
+            task.setDirs(paths);
+            if (extension.getText() != null && !extension.getText().equals("")) {
+                task.setExtension(extension.getText());
+            }
+            task.setSearchTemplate(searchTemplate.getText());
+            task.addPropertyChangeListener(new PropertyChangeListener() {
+                @Override
+                public void propertyChange(final PropertyChangeEvent event) {
+                    switch (event.getPropertyName()) {
+                        case "progress":
+                            /*searchProgressBar.setIndeterminate(false);
+                            searchProgressBar.setValue((Integer) event.getNewValue());*/
+                            break;
+                        case "state":
+                            switch ((StateValue) event.getNewValue()) {
+                                case DONE:
+                                    /*searchProgressBar.setVisible(false);
+                                    searchCancelAction.putValue(Action.NAME, "Search");
+                                    try {
+                                        final int count = searchWorker.get();
+                                        JOptionPane.showMessageDialog(Application.this, "Found: " + count + " words", "Search Words",
+                                            JOptionPane.INFORMATION_MESSAGE);
+                                    } catch (final CancellationException e) {
+                                        JOptionPane.showMessageDialog(Application.this, "The search process was cancelled", "Search Words",
+                                            JOptionPane.WARNING_MESSAGE);
+                                    } catch (final Exception e) {
+                                        JOptionPane.showMessageDialog(Application.this, "The search process failed", "Search Words",
+                                            JOptionPane.ERROR_MESSAGE);
+                                    }*/
+                                    try {
+                                        setResult(task.get());
+                                    } catch (InterruptedException e1) {
+                                        e1.printStackTrace();
+                                    } catch (ExecutionException e1) {
+                                        e1.printStackTrace();
+                                    }
+                                    break;
+                                case STARTED:
+                                case PENDING:
+                                    break;
+                            }
+                            break;
+                    }
+                }
+            });
+            task.execute();
         });
-
         pack();
         setVisible(true);
+    }
+
+    private void setResult(Map<String, List<Long>> result) {
+        this.remove(leftPanelSlot);
+        leftPanelSlot = new FileTreeView(result);
+        leftPanelSlot.setMinimumSize(new Dimension(300, 300));
+        this.add(leftPanelSlot, BorderLayout.LINE_START);
+        this.validate();
+        this.repaint();
     }
 
 
