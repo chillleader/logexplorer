@@ -1,11 +1,14 @@
 package ru.bepis.logexplorer.ui;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
 import java.io.File;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
+import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -37,7 +40,6 @@ public class FileTreeView extends JPanel {
             if (treepath.getParentPath() == null) {
                 return;
             }
-            tree.setSelectionPath(treepath);
             StringBuilder sb = new StringBuilder();
             for (int i = 1; i < treepath.getPath().length; i++) {
                 sb.append(treepath.getPath()[i]);
@@ -49,14 +51,19 @@ public class FileTreeView extends JPanel {
             MainUI.getInstance().openFile(sb.toString());
         });
 
-        JScrollPane scrollpane = new JScrollPane();
-        scrollpane.getViewport().add(tree);
+        JScrollPane scrollpane = new JScrollPane(tree);
+        scrollpane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         add(BorderLayout.CENTER, scrollpane);
     }
 
     FileTreeView() {
         super();
-        add(new JLabel(PLACEHOLDER_TEXT));
+        JLabel label = new JLabel(PLACEHOLDER_TEXT);
+        label.setFont(MainUI.getAppFont());
+        add(label);
+        setPreferredSize(new Dimension(300, 300));
+        setBackground(Color.WHITE);
+        setBorder(BorderFactory.createLineBorder(Color.BLACK));
     }
 
     void addNode(String pathString) {

@@ -76,8 +76,8 @@ public class MainUI extends JFrame {
 
     private MainUI() {
         super("Log Explorer");
-        this.setBounds(100, 100, 800, 800);
-        this.setLayout(new BorderLayout());
+        this.setBounds(100, 100, 1000, 800);
+        //this.setLayout(new BorderLayout());
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         newSearch.setFont(font);
         about.setFont(font);
@@ -91,12 +91,7 @@ public class MainUI extends JFrame {
         }
         fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
         fileChooser.setMultiSelectionEnabled(true);
-        //splitPane.setDividerLocation(0.5);
-        //splitPane.setResizeWeight(0.5);
-        //splitPane.setOneTouchExpandable(true);
-        //leftPanelSlot.setMinimumSize(new Dimension(250, 400));
-        rightPanelSlot.setMinimumSize(new Dimension(300, 400));
-        //this.add(splitPane);
+        rightPanelSlot.setPreferredSize(new Dimension(500, 500));
         this.add(leftPanelSlot, BorderLayout.LINE_START);
         this.add(rightPanelSlot, BorderLayout.CENTER);
 
@@ -137,19 +132,6 @@ public class MainUI extends JFrame {
                         case "state":
                             switch ((StateValue) event.getNewValue()) {
                                 case DONE:
-                                    /*searchProgressBar.setVisible(false);
-                                    searchCancelAction.putValue(Action.NAME, "Search");
-                                    try {
-                                        final int count = searchWorker.get();
-                                        JOptionPane.showMessageDialog(Application.this, "Found: " + count + " words", "Search Words",
-                                            JOptionPane.INFORMATION_MESSAGE);
-                                    } catch (final CancellationException e) {
-                                        JOptionPane.showMessageDialog(Application.this, "The search process was cancelled", "Search Words",
-                                            JOptionPane.WARNING_MESSAGE);
-                                    } catch (final Exception e) {
-                                        JOptionPane.showMessageDialog(Application.this, "The search process failed", "Search Words",
-                                            JOptionPane.ERROR_MESSAGE);
-                                    }*/
                                     try {
                                         setResult(task.get());
                                         final int fileCount = task.get().keySet().size();
@@ -174,14 +156,15 @@ public class MainUI extends JFrame {
             });
             task.execute();
         });
-        pack();
+        //pack();
         setVisible(true);
     }
 
     private void setResult(Map<String, List<Long>> result) {
         this.remove(leftPanelSlot);
         leftPanelSlot = new FileTreeView(result);
-        leftPanelSlot.setMinimumSize(new Dimension(300, 300));
+        leftPanelSlot.setMinimumSize(new Dimension(250, 300));
+        leftPanelSlot.setMaximumSize(new Dimension(250, 1500));
         this.add(leftPanelSlot, BorderLayout.LINE_START);
         this.validate();
         this.repaint();

@@ -7,17 +7,20 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import ru.bepis.logexplorer.file.ChunkFileReader;
+import ru.bepis.logexplorer.file.FullFileReader;
 
 public class TextTab extends JPanel {
 
     private JPanel buttonBox = new JPanel();
     private JButton nextButton = new JButton("Next");
     private JButton prevButton = new JButton("Prev");
-    private JTextArea textArea = new JTextArea(35, 80);
+    private JButton closeButton = new JButton("Close");
+    private JTextArea textArea = new JTextArea(35, 70);
     private JScrollPane scrollPane = new JScrollPane(textArea,
         JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
 
     private ChunkFileReader fileReader;
+    private FullFileReader fullFileReader;
 
     public TextTab(String filePath) {
         super();
@@ -25,14 +28,17 @@ public class TextTab extends JPanel {
         textArea.setEditable(false);
         buttonBox.add(prevButton);
         buttonBox.add(nextButton);
+        buttonBox.add(closeButton);
         textArea.setFont(MainUI.getTextFont());
         //scrollPane.setPreferredSize(new Dimension(this.getWidth() - 20, this.getHeight() - 20));
         this.add(buttonBox, BorderLayout.PAGE_START);
         this.add(scrollPane, BorderLayout.LINE_END);
         configureActions();
         try {
-            fileReader = new ChunkFileReader(filePath);
-            textArea.setText(fileReader.readNextPage());
+            //fileReader = new ChunkFileReader(filePath);
+            fullFileReader = new FullFileReader(filePath);
+            //textArea.setText(fileReader.readNextPage());
+            textArea.setText(fullFileReader.readFile());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -52,6 +58,9 @@ public class TextTab extends JPanel {
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
+        });
+        closeButton.addActionListener(e -> {
+            TextView.tabbedPane.removeTabAt(TextView.tabbedPane.getSelectedIndex());
         });
     }
 }
