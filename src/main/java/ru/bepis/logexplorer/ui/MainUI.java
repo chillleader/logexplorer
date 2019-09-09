@@ -3,8 +3,6 @@ package ru.bepis.logexplorer.ui;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.util.Arrays;
 import java.util.List;
@@ -121,37 +119,34 @@ public class MainUI extends JFrame {
                 task.setExtension(extension.getText());
             }
             task.setSearchTemplate(searchTemplate.getText());
-            task.addPropertyChangeListener(new PropertyChangeListener() {
-                @Override
-                public void propertyChange(final PropertyChangeEvent event) {
-                    switch (event.getPropertyName()) {
-                        case "progress":
-                            /*searchProgressBar.setIndeterminate(false);
-                            searchProgressBar.setValue((Integer) event.getNewValue());*/
-                            break;
-                        case "state":
-                            switch ((StateValue) event.getNewValue()) {
-                                case DONE:
-                                    try {
-                                        setResult(task.get());
-                                        final int fileCount = task.get().keySet().size();
-                                        final int entryCount = task.get().values().size();
-                                        JOptionPane.showMessageDialog(
-                                            null, "Found: " + entryCount + " occurrences in " + fileCount
-                                                + " files", "Search results",
-                                            JOptionPane.INFORMATION_MESSAGE);
-                                    } catch (InterruptedException e1) {
-                                        e1.printStackTrace();
-                                    } catch (ExecutionException e1) {
-                                        e1.printStackTrace();
-                                    }
-                                    break;
-                                case STARTED:
-                                case PENDING:
-                                    break;
-                            }
-                            break;
-                    }
+            task.addPropertyChangeListener(event -> {
+                switch (event.getPropertyName()) {
+                    case "progress":
+                        /*searchProgressBar.setIndeterminate(false);
+                        searchProgressBar.setValue((Integer) event.getNewValue());*/
+                        break;
+                    case "state":
+                        switch ((StateValue) event.getNewValue()) {
+                            case DONE:
+                                try {
+                                    setResult(task.get());
+                                    final int fileCount = task.get().keySet().size();
+                                    final int entryCount = task.get().values().size();
+                                    JOptionPane.showMessageDialog(
+                                        null, "Found: " + entryCount + " occurrences in " + fileCount
+                                            + " files", "Search results",
+                                        JOptionPane.INFORMATION_MESSAGE);
+                                } catch (InterruptedException e1) {
+                                    e1.printStackTrace();
+                                } catch (ExecutionException e1) {
+                                    e1.printStackTrace();
+                                }
+                                break;
+                            case STARTED:
+                            case PENDING:
+                                break;
+                        }
+                        break;
                 }
             });
             task.execute();
@@ -170,8 +165,8 @@ public class MainUI extends JFrame {
         this.repaint();
     }
 
-    public void openFile(String path) {
-        rightPanelSlot.openFile(path);
+    public void openFile(String path, List<Long> occurrences) {
+        rightPanelSlot.openFile(path, occurrences, searchTemplate.getText());
         validate();
         repaint();
     }

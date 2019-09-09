@@ -43,12 +43,12 @@ public class FileTreeView extends JPanel {
             StringBuilder sb = new StringBuilder();
             for (int i = 1; i < treepath.getPath().length; i++) {
                 sb.append(treepath.getPath()[i]);
-                sb.append('\\');
+                if (i != treepath.getPath().length - 1) sb.append('\\');
             }
             File file = new File(sb.toString());
             if (!file.exists() || file.isDirectory()) return;
             System.out.println(sb.toString());
-            MainUI.getInstance().openFile(sb.toString());
+            MainUI.getInstance().openFile(sb.toString(), searchResult.get(sb.toString()));
         });
 
         JScrollPane scrollpane = new JScrollPane(tree);
