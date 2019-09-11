@@ -56,7 +56,7 @@ public class MainUI extends JFrame {
     private final JComponent[] inputs = new JComponent[]{
         new JLabel("Text to search"),
         searchTemplate,
-        new JLabel("File extension (.log if empty)"),
+        new JLabel("File extension ('log' by default)"),
         extension,
         chosenPath,
         fileChooserButton
@@ -122,18 +122,20 @@ public class MainUI extends JFrame {
             task.addPropertyChangeListener(event -> {
                 switch (event.getPropertyName()) {
                     case "progress":
-                        /*searchProgressBar.setIndeterminate(false);
-                        searchProgressBar.setValue((Integer) event.getNewValue());*/
                         break;
                     case "state":
                         switch ((StateValue) event.getNewValue()) {
                             case DONE:
                                 try {
                                     setResult(task.get());
-                                    final int fileCount = task.get().keySet().size();
-                                    final int entryCount = task.get().values().size();
+                                    int fileCount = task.get().keySet().size();
+                                    int entryCount = 0;
+                                    for (List<Long> entryList : task.get().values()) {
+                                        entryCount += entryList.size();
+                                    }
                                     JOptionPane.showMessageDialog(
-                                        null, "Found: " + entryCount + " occurrences in " + fileCount
+                                        null,
+                                        "Found: " + entryCount + " occurrences in " + fileCount
                                             + " files", "Search results",
                                         JOptionPane.INFORMATION_MESSAGE);
                                 } catch (InterruptedException e1) {
@@ -166,7 +168,7 @@ public class MainUI extends JFrame {
     }
 
     public void openFile(String path, List<Long> occurrences) {
-        rightPanelSlot.openFile(path, occurrences, searchTemplate.getText());
+        rightPanelSlot.openFile(path, occurrences);
         validate();
         repaint();
     }

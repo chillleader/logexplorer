@@ -1,7 +1,9 @@
 package ru.bepis.logexplorer.ui;
 
+import java.io.UncheckedIOException;
 import java.util.List;
 import java.util.Map;
+import javax.swing.JOptionPane;
 import javax.swing.SwingWorker;
 import ru.bepis.logexplorer.file.MultithreadedSearcher;
 import ru.bepis.logexplorer.file.Searcher;
@@ -16,9 +18,11 @@ public class SearchWorker extends SwingWorker<Map<String, List<Long>>, String> {
     public void setSearchTemplate(String searchTemplate) {
         this.searchTemplate = searchTemplate;
     }
+
     public void setDirs(List<String> dirs) {
         this.dirs = dirs;
     }
+
     public void setExtension(String extension) {
         this.extension = extension;
     }
@@ -28,9 +32,16 @@ public class SearchWorker extends SwingWorker<Map<String, List<Long>>, String> {
         searcher.setSearchTemplate(searchTemplate);
         searcher.setExtension(extension);
         searcher.setDirectoryList(dirs);
-        searcher.startSearch();
+        try {
+            searcher.startSearch();
+        } catch (UncheckedIOException e) {
+            JOptionPane.showMessageDialog(null,
+                "Couldn't access some folders. Try running with admin privileges.");
+        }
         while (true) {
-            if (searcher.isReady()) break;
+            if (searcher.isReady()) {
+                break;
+            }
         }
         return searcher.getResult();
     }

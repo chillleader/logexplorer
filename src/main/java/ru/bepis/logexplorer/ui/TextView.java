@@ -19,12 +19,11 @@ public class TextView extends JPanel {
         placeholderList.add(0L);
         placeholderList.add(50L);
         tabbedPane.addTab("Start Page",
-            new TextTab("C:/Users/easyd/Desktop/test1/alice29.txt", placeholderList,
-                placeholderText));
+            new TextTab("C:/Users/easyd/Desktop/test1/alice29.txt", placeholderList));
     }
 
-    public void openFile(String path, List<Long> occurrences, String template) {
-        tabbedPane.addTab(path, new TextTab(path, occurrences, template));
+    public void openFile(String path, List<Long> occurrences) {
+        tabbedPane.addTab(path, new TextTab(path, occurrences));
         tabbedPane.setSelectedIndex(tabbedPane.getTabCount() - 1);
     }
 

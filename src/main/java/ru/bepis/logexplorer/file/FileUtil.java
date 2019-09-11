@@ -40,6 +40,7 @@ public class FileUtil {
                 if (line.contains(template))
                     resultList.add(charNumber);
                 charNumber += line.length();
+                charNumber++;
             }
         }
         return resultList;
